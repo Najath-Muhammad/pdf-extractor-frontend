@@ -27,6 +27,7 @@ const ShowPages = ({ pageCount, selectedPages, onToggle, onSelectAll, onClearAll
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFetching(true);
     setLoadError(null);
     setPdfData(null);

@@ -1,14 +1,9 @@
 import { useState, useRef, useCallback } from 'react';
 import axios from 'axios';
-
-interface UploadResult {
-  filePath: string;
-  pageCount: number;
-  originalName: string;
-}
+import type { UploadedFile } from '../types';
 
 interface Props {
-  onUploaded: (result: UploadResult) => void;
+  onUploaded: (result: UploadedFile) => void;
 }
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';

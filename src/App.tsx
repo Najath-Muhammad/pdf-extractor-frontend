@@ -4,14 +4,7 @@ import UploadComponent from './components/uploadComponent';
 import ShowPages from './components/showPages';
 import ExtractButton from './components/extractButton';
 import DownloadCard from './components/downloadCard';
-
-type Step = 'upload' | 'select' | 'done';
-
-interface UploadedFile {
-  filePath: string;
-  pageCount: number;
-  originalName: string;
-}
+import type { Step, UploadedFile } from './types';
 
 function App() {
   const [step, setStep] = useState<Step>('upload');
