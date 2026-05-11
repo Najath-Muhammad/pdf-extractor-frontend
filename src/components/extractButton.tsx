@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { API_ROUTES } from '../constants/routes';
 
 interface Props {
   filePath: string;
@@ -22,7 +23,7 @@ const ExtractButton = ({ filePath, selectedPages, onExtracted, onError }: Props)
 
     setLoading(true);
     try {
-      const res = await axios.post(`${API}/pdf/extract`, {
+      const res = await axios.post(`${API}${API_ROUTES.PDF.EXTRACT}`, {
         filePath,
         pages: selectedPages,
       });

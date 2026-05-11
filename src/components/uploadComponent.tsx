@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import axios from 'axios';
 import type { UploadedFile } from '../types';
+import { API_ROUTES } from '../constants/routes';
 
 interface Props {
   onUploaded: (result: UploadedFile) => void;
@@ -24,7 +25,7 @@ const UploadComponent = ({ onUploaded }: Props) => {
     setProgress(0);
 
     try {
-      const res = await axios.post(`${API}/pdf/upload`, formData, {
+      const res = await axios.post(`${API}${API_ROUTES.PDF.UPLOAD}`, formData, {
         onUploadProgress: (e) => {
           if (e.total) setProgress(Math.round((e.loaded / e.total) * 100));
         },
