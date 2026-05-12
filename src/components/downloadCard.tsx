@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 interface Props {
   downloadUrl: string;
   selectedCount: number;
@@ -5,6 +7,32 @@ interface Props {
 }
 
 const DownloadCard = ({ downloadUrl, selectedCount, onStartOver }: Props) => {
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setDownloading(true);
+    try {
+      const res = await fetch(downloadUrl);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = downloadUrl.split('/').pop() || 'extracted.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+    } catch (err) {
+      // Fallback to direct navigation if fetch fails
+      window.open(downloadUrl, '_blank');
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <div className="download-section">
       <div className="download-card">
@@ -30,11 +58,11 @@ const DownloadCard = ({ downloadUrl, selectedCount, onStartOver }: Props) => {
           <a
             id="download-btn"
             href={downloadUrl}
-            download
+            onClick={handleDownload}
             className="btn-download"
-            rel="noopener noreferrer"
+            style={{ pointerEvents: downloading ? 'none' : 'auto', opacity: downloading ? 0.7 : 1 }}
           >
-            ⬇️ Download PDF
+            {downloading ? '⏳ Downloading...' : '⬇️ Download PDF'}
           </a>
 
           <button
