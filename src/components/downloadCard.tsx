@@ -25,7 +25,7 @@ const DownloadCard = ({ downloadUrl, selectedCount, onStartOver }: Props) => {
       document.body.removeChild(link);
 
       setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-    } catch (err) {
+    } catch {
       // Fallback to direct navigation if fetch fails
       window.open(downloadUrl, '_blank');
     } finally {

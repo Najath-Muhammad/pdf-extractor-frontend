@@ -20,8 +20,6 @@ interface Props {
 const ShowPages = ({ pageCount, selectedPages, onToggle, onSelectAll, onClearAll, pdfUrl }: Props) => {
   const allSelected = selectedPages.length === pageCount;
 
-  // Fetch the PDF as ArrayBuffer in the main thread so CORS is handled
-  // correctly — avoids the react-pdf Web Worker cross-origin fetch failure.
   const [pdfData, setPdfData] = useState<{ data: ArrayBuffer } | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [fetching, setFetching] = useState(true);

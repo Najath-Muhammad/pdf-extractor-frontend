@@ -1,13 +1,10 @@
 import { useState, useRef, useCallback } from 'react';
-import axios from 'axios';
 import type { UploadedFile } from '../types';
-import { API_ROUTES } from '../constants/routes';
+import { uploadPdfFile } from '../services/api';
 
 interface Props {
   onUploaded: (result: UploadedFile) => void;
 }
-
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const UploadComponent = ({ onUploaded }: Props) => {
   const [dragging, setDragging] = useState(false);
@@ -18,19 +15,12 @@ const UploadComponent = ({ onUploaded }: Props) => {
   const handleFile = useCallback(async (file: File) => {
     if (!file || file.type !== 'application/pdf') return;
 
-    const formData = new FormData();
-    formData.append('pdf', file);
-
     setUploading(true);
     setProgress(0);
 
     try {
-      const res = await axios.post(`${API}${API_ROUTES.PDF.UPLOAD}`, formData, {
-        onUploadProgress: (e) => {
-          if (e.total) setProgress(Math.round((e.loaded / e.total) * 100));
-        },
-      });
-      onUploaded(res.data);
+      const data = await uploadPdfFile(file, setProgress);
+      onUploaded(data);
     } finally {
       setUploading(false);
       setProgress(0);

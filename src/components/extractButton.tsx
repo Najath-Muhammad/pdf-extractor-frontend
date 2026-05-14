@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { API_ROUTES } from '../constants/routes';
+import { extractPdfPages } from '../services/api';
 
 interface Props {
   filePath: string;
@@ -8,9 +8,6 @@ interface Props {
   onExtracted: (downloadUrl: string) => void;
   onError: (msg: string) => void;
 }
-
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:5000';
 
 const ExtractButton = ({ filePath, selectedPages, onExtracted, onError }: Props) => {
   const [loading, setLoading] = useState(false);
@@ -23,11 +20,8 @@ const ExtractButton = ({ filePath, selectedPages, onExtracted, onError }: Props)
 
     setLoading(true);
     try {
-      const res = await axios.post(`${API}${API_ROUTES.PDF.EXTRACT}`, {
-        filePath,
-        pages: selectedPages,
-      });
-      onExtracted(`${BASE_URL}${res.data.downloadUrl}`);
+      const url = await extractPdfPages(filePath, selectedPages);
+      onExtracted(url);
     } catch (err: unknown) {
       const msg =
         axios.isAxiosError(err)
