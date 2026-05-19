@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { extractPdfPages } from '../services/api';
+import { parseApiError } from '../utils/parseApiError';
 
 interface Props {
   filePath: string;
@@ -23,11 +23,7 @@ const ExtractButton = ({ filePath, selectedPages, onExtracted, onError }: Props)
       const url = await extractPdfPages(filePath, selectedPages);
       onExtracted(url);
     } catch (err: unknown) {
-      const msg =
-        axios.isAxiosError(err)
-          ? err.response?.data?.error ?? 'Extraction failed'
-          : 'Extraction failed';
-      onError(msg);
+      onError(parseApiError(err, 'Extraction failed. Please try again.'));
     } finally {
       setLoading(false);
     }

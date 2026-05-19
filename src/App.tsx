@@ -110,7 +110,7 @@ function App() {
 
         {/* Step: Upload */}
         {step === 'upload' && (
-          <UploadComponent onUploaded={handleUploaded} />
+          <UploadComponent onUploaded={handleUploaded} onError={setError} />
         )}
 
         {/* Step: Select Pages */}

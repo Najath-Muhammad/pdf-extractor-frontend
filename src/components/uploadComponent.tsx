@@ -1,19 +1,25 @@
 import { useState, useRef, useCallback } from 'react';
 import type { UploadedFile } from '../types';
 import { uploadPdfFile } from '../services/api';
+import { parseApiError } from '../utils/parseApiError';
 
 interface Props {
   onUploaded: (result: UploadedFile) => void;
+  onError?: (msg: string) => void;
 }
 
-const UploadComponent = ({ onUploaded }: Props) => {
+const UploadComponent = ({ onUploaded, onError }: Props) => {
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = useCallback(async (file: File) => {
-    if (!file || file.type !== 'application/pdf') return;
+    if (!file) return;
+    if (file.type !== 'application/pdf') {
+      onError?.('Only PDF files are allowed.');
+      return;
+    }
 
     setUploading(true);
     setProgress(0);
@@ -21,11 +27,13 @@ const UploadComponent = ({ onUploaded }: Props) => {
     try {
       const data = await uploadPdfFile(file, setProgress);
       onUploaded(data);
+    } catch (err: unknown) {
+      onError?.(parseApiError(err, 'Upload failed. Please try again.'));
     } finally {
       setUploading(false);
       setProgress(0);
     }
-  }, [onUploaded]);
+  }, [onUploaded, onError]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
